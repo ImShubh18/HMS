@@ -133,8 +133,56 @@ export const addNewAdmin = catchAsyncErrors(async (req, res, next) => {
     password,
     role: "Admin",
   });
-  res.status(200).json({
-    success : true,
-    message : "New Admin Registered!!"
-  })
+  // Generate JWT and set cookie
+  generateToken(admin, "Admin Registered Successfully!!", 201, res);
+});
+
+export const getAllDoctors = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const doctors = await User.find({ role: "Doctor" }).select("-password");
+    res.status(200).json({
+      success: true,
+      doctors,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export const getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  try {
+    const user = req.user;
+    res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+export const logoutAdmin = catchAsyncErrors(async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("adminToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .json({
+      success: true,
+      message: "Admin Logged Out Successfully!!",
+    });
+});
+
+export const logoutPatient = catchAsyncErrors(async (req, res, next) => {
+  res
+    .status(200)
+    .cookie("patientToken", "", {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    .json({
+      success: true,
+      message: "Patient Logged Out Successfully!!",
+    });
 });
