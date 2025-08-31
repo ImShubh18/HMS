@@ -38,3 +38,4 @@ export const isPatientAuthenticated = catchAsyncErrors(async (req, res, next) =>
   }
   next();
 });
+
